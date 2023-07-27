@@ -32,9 +32,6 @@ const TableDemo = () => {
     const [allExpanded, setAllExpanded] = useState(false);
     const contextPath = getConfig().publicRuntimeConfig.contextPath;
 
-    const [dataApi, setDataApi] = useState([]);
-    const [loadingApi, setLoadingApi] = useState(true);
-
     const representatives = [
         { name: 'Amy Elsner', image: 'amyelsner.png' },
         { name: 'Anna Fali', image: 'annafali.png' },
@@ -76,7 +73,7 @@ const TableDemo = () => {
                 </span>
             </div>
         );
-    };     
+    };
 
     useEffect(() => {
         setLoading2(true);
@@ -109,8 +106,6 @@ const TableDemo = () => {
             return d;
         });
     };
-
-
 
     const formatDate = (value) => {
         return value.toLocaleDateString('en-US', {
@@ -340,84 +335,10 @@ const TableDemo = () => {
         return total;
     };
 
-    useEffect(() => {
-        const fetchDataApi = async () => {
-          try {
-            const response = await fetch('http://paplus.asei.co.id:5002/GET_DATABWS?tgl_start=2022-01-01 00:00:00&tgl_end=2023-05-10 23:59:59');
-            const data = await response.json();
-            const processedDataApi = processDataApi(data);
-            setDataApi(processedDataApi);
-            setLoadingApi(false);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-            setLoadingApi(false);
-          }
-        };
-    
-        fetchDataApi();
-      }, []);
-
-      const processDataApi = (data) => {
-        return data.map((item) => ({
-          id: item.LOANNO, // Assuming the "LOANNO" field uniquely identifies each item, use it as the dataKey.
-          custnam: item.CLNAMA,
-          loanno: item.LOANNO,
-          refnumber: item.REFNUMBER,
-          produk: item.PRODUK,
-          namaak: item.NAMAAK,
-          cabasei: item.NMASEI,
-          nmbank: item.NMBNK,
-          cabbank: item.NMUNIT,
-          tglmulai: `${item.TGLM}-${item.BLNM}-${item.THNM}`,
-          tglakhir: `${item.TGLA}-${item.BLNA}-${item.THNA}`, // Combine the date components into a single string.
-          balance: parseFloat(item.PREMI),
-        //   status: item.STSCNCL === null ? 'Active' : 'Inactive', // Assuming "STSCNCL" indicates the status of the loan.
-        //   activity: item.STSERROR === '0' ? 'Successful' : 'Failed', // Assuming "STSERROR" indicates the activity status.
-        //   verified: item.STSHOLD === '1', // Assuming "STSHOLD" indicates whether it's verified or not (1 for verified).
-        }));
-      };
-
     const header1 = renderHeader1();
 
     return (
         <div className="grid">
-            <div className="col-12">
-                <div className="card">
-                    <h5>Nyoba Data BWS</h5>
-                    {loadingApi ? (
-                    <div>Loading...</div>
-                    ) : dataApi.length > 0 ? (
-
-                        // <DataTable value={dataApi} scrollable scrollHeight="400px" loading={loading2} scrollDirection="both" className="mt-3">    
-                    <DataTable
-                        value={dataApi}
-                        paginator
-                        className="p-datatable-gridlines"
-                        showGridlines
-                        rows={10}
-                        dataKey="id"
-                        loading={loadingApi}
-                        responsiveLayout="scroll"
-                        emptyMessage="No customers found."
-                    >                 
-                        <Column field="custnam" header="Customer" filter filterPlaceholder="Search by custnam" style={{ minWidth: '12rem' }} /> 
-                        <Column field="loanno" header="Loan Number" filter filterPlaceholder="Search by loanno" style={{ minWidth: '12rem' }} />
-                        <Column field="refnumber" header="Ref Number" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} /> 
-                        <Column field="produk" header="Produk" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} />
-                        <Column field="namaak" header="COB" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} />
-                        <Column field="cabasei" header="Kantor Cabang ASEI" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} />
-                        <Column field="nmbank" header="Bank" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} />
-                        <Column field="tglmulai" header="Tanggal Awal Pengajuan" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} />
-                        <Column field="balance" header="Premi" filter filterPlaceholder="Search by balance" style={{ minWidth: '12rem' }} />
-                    </DataTable>
-                    ) : (
-                    <div>No data available.</div>
-                    )}
-                </div>
-                </div>
-
-
-
             <div className="col-12">
                 <div className="card">
                     <h5>Filter Menu</h5>

@@ -14,6 +14,50 @@ const AppMenu = () => {
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
         {
+            label: 'Bank Woori Saudara',
+            items: [
+                { label: 'Data Acceptance', icon: 'pi pi-fw pi-check-square', to: '/bws/accept' }
+            ]
+        },
+        {
+            label: 'Bank Perekonomian Rakyat ',
+            icon: 'pi pi-fw pi-briefcase',
+            to: '/Bank Perekonomian Rakyat ',
+            items: [              
+                {
+                    label: 'Kutai Timur',
+                    icon: 'pi pi-fw pi-credit-card',
+                    items: [
+                        {
+                            label: 'Calculator Premi',
+                            icon: 'pi pi-fw pi-calculator',
+                            to: '/kutim/calculator'
+                        },
+                        {
+                            label: 'Uploader',
+                            icon: 'pi pi-fw pi-upload',
+                            to: '/kutim/uploader'
+                        },
+                        {
+                            label: 'Data Acceptance',
+                            icon: 'pi pi-fw pi-check-square',
+                            to: '/kutim/acceptance'
+                        },
+                        {
+                            label: 'Data Hold',
+                            icon: 'pi pi-fw pi-exclamation-triangle',
+                            to: '/kutim/hold'
+                        },
+                        {
+                            label: 'Data Rejected',
+                            icon: 'pi pi-fw pi-ban',
+                            to: '/kutim/rejected'
+                        },
+                    ]
+                }
+            ]
+        },
+        {
             label: 'UI Components',
             items: [
                 { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/uikit/formlayout' },
@@ -170,9 +214,9 @@ const AppMenu = () => {
                     return !item.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
 
-                <Link href="https://www.primefaces.org/primeblocks-react" target="_blank" style={{ cursor: 'pointer' }}>
+                {/* <Link href="https://www.primefaces.org/primeblocks-react" target="_blank" style={{ cursor: 'pointer' }}>
                     <img alt="Prime Blocks" className="w-full mt-3" src={`${contextPath}/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
-                </Link>
+                </Link> */}
             </ul>
         </MenuProvider>
     );
