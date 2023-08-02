@@ -24,7 +24,7 @@ const AppTopbar = forwardRef((props, ref) => {
                 {/* <img src={`${contextPath}/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} widt={'true'} alt="logo" /> */}
                 <img src={`${contextPath}/layout/images/logoasei-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.png`} width="47.22px" height={'35px'} widt={'true'} alt="logo" />
 
-                <span>My Asei</span>
+                <span>Asuransi ASEI Indonesia</span>
             </Link>
 
             <button ref={menubuttonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>

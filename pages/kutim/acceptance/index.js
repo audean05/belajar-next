@@ -8,7 +8,7 @@ import { Calendar } from 'primereact/calendar';
 
 const SeacrhBws = () => {
     const breadcrumbHome = { icon: 'pi pi-home', to: '/' };
-    const breadcrumbItems = [{ label: 'Bank Woori Saudara' }, { label: 'Data Acceptance' }];
+    const breadcrumbItems = [{ label: 'Bank Perekonomian Rakyat' }, { label: 'Kutai Timur'}, { label: 'Data Acceptance' }];
 
     const [loading2, setLoading2] = useState(false);
     const [calendarValueAwal, setCalendarValueAwal] = useState(null);
@@ -47,6 +47,13 @@ const SeacrhBws = () => {
           setLoadingApi(false);
           setSearchClicked(false); // Set searchClicked back to false when the data is fetched
         }
+      };
+
+      const formatBalanceWithDecimal = (value) => {
+        return value.toLocaleString('id-ID', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
       };
 
       const formatDate = (date) => {
@@ -97,7 +104,7 @@ const SeacrhBws = () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
-                    <h5>Data Acceptance - Bank Woori Saudara</h5>
+                    <h5><i className="pi pi-fw pi-check-square"></i> Data Acceptance</h5>
                     <BreadCrumb home={breadcrumbHome} model={breadcrumbItems} />
                 </div>
             </div>
@@ -123,7 +130,7 @@ const SeacrhBws = () => {
           
 
                  {loadingApi ? (
-                    <div>Loading Search Data...</div>
+                    <div></div>
                     ) : dataApi.length > 0 ? (
 
                    <DataTable
@@ -147,7 +154,7 @@ const SeacrhBws = () => {
                         <Column field="cabasei" header="Kantor Cabang ASEI" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} />
                         <Column field="nmbank" header="Bank" filter filterPlaceholder="Search by loan" style={{ minWidth: '12rem' }} />
                         <Column field="periode" header="Periode Pertanggungan" filter filterPlaceholder="Search by loan" style={{ minWidth: '15rem' }} />
-                        <Column field="balance" header="Premi" filter filterPlaceholder="Search by balance" style={{ minWidth: '12rem' }} />
+                        <Column field="balance" header="Premi" filter filterPlaceholder="Search by balance" style={{ minWidth: '12rem' }} body={(rowData) => formatBalanceWithDecimal(rowData.balance)}/>
                         {/* <Column field="status" header="Status" filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }} body={statusBodyTemplate} filter filterElement={statusFilterTemplate} /> */}
                     </DataTable>
                     ) : (

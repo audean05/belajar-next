@@ -16,14 +16,19 @@
         "@fullcalendar/interaction": "6.1.4",
         "@fullcalendar/react": "6.1.4",
         "@fullcalendar/timegrid": "6.1.4",
+        "axios": "^1.4.0",
         "chart.js": "4.2.1",
+        "inputmask": "^5.0.8",
         "next": "13.2.3",
         "primeflex": "3.3.0",
         "primeicons": "^6.0.1",
-        "primereact": "9.2.0",
+        "primereact": "^9.2.0",
+        "rc-slider": "^10.2.1",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "react-transition-group": "^4.4.5"
+        "react-transition-group": "^4.4.5",
+        "read-excel-file": "^5.6.1",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "eslint": "8.35.0",

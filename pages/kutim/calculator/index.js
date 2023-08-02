@@ -1,162 +1,192 @@
 import React, { useEffect, useState } from 'react';
+import { BreadCrumb } from 'primereact/breadcrumb';
 import { InputText } from 'primereact/inputtext';
-import { Chip } from 'primereact/chip';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { AutoComplete } from 'primereact/autocomplete';
-import { Calendar } from 'primereact/calendar';
-import { Chips } from 'primereact/chips';
 import { Slider } from 'primereact/slider';
-import { Knob } from 'primereact/knob';
-import { Rating } from 'primereact/rating';
-import { ColorPicker } from 'primereact/colorpicker';
-import { RadioButton } from 'primereact/radiobutton';
-import { Checkbox } from 'primereact/checkbox';
-import { InputSwitch } from 'primereact/inputswitch';
-import { ListBox } from 'primereact/listbox';
 import { Dropdown } from 'primereact/dropdown';
-import { ToggleButton } from 'primereact/togglebutton';
-import { MultiSelect } from 'primereact/multiselect';
-import { TreeSelect } from 'primereact/treeselect';
-import { SelectButton } from 'primereact/selectbutton';
 import { Button } from 'primereact/button';
-import { InputNumber } from 'primereact/inputnumber';
-import { CountryService } from '../../../demo/service/CountryService';
-import { NodeService } from '../../../demo/service/NodeService';
+
+import axios from 'axios';
+import 'rc-slider/assets/index.css';
 
 export const CalculatorKutim = () => {
-    const [floatValue, setFloatValue] = useState('');
-    const [autoValue, setAutoValue] = useState(null);
-    const [selectedAutoValue, setSelectedAutoValue] = useState(null);
-    const [autoFilteredValue, setAutoFilteredValue] = useState([]);
-    const [calendarValue, setCalendarValue] = useState(null);
-    const [inputNumberValue, setInputNumberValue] = useState(null);
-    const [chipsValue, setChipsValue] = useState([]);
-    const [sliderValue, setSliderValue] = useState('');
-    const [ratingValue, setRatingValue] = useState(null);
-    const [colorValue, setColorValue] = useState('1976D2');
-    const [knobValue, setKnobValue] = useState(20);
-    const [radioValue, setRadioValue] = useState(null);
-    const [checkboxValue, setCheckboxValue] = useState([]);
-    const [switchValue, setSwitchValue] = useState(false);
-    const [listboxValue, setListboxValue] = useState(null);
-    const [dropdownValue, setDropdownValue] = useState(null);
-    const [multiselectValue, setMultiselectValue] = useState(null);
-    const [toggleValue, setToggleValue] = useState(false);
-    const [selectButtonValue1, setSelectButtonValue1] = useState(null);
-    const [selectButtonValue2, setSelectButtonValue2] = useState(null);
-    const [inputGroupValue, setInputGroupValue] = useState(false);
-    const [selectedNode, setSelectedNode] = useState(null);
-    const [treeSelectNodes, setTreeSelectNodes] = useState(null);
+    const breadcrumbHome = { icon: 'pi pi-home', to: '/' }; 
+    const breadcrumbItems = [{ label: 'Bank Perekonomian Rakyat' }, { label: 'Kutai Timur'}, { label: 'Calculator Premi' }];
 
-    const listboxValues = [
-        { name: 'New York', code: 'NY' },
-        { name: 'Rome', code: 'RM' },
-        { name: 'London', code: 'LDN' },
-        { name: 'Istanbul', code: 'IST' },
-        { name: 'Paris', code: 'PRS' }
-    ];
+    const [sliderValueAge, setSliderValueAge] = useState('');
+    const [sliderValueTenor, setSliderValueTenor] = useState('');
+    const [dropdownValue, setDropdownValue] = useState(null);
+    const [loanAmount, setLoanAmount] = useState('');
+
+    const [productInsurance, setProductInsurance] = useState('');
+    const [currentAge, setCurrentAge] = useState(''); 
+    const [loanTerm, setLoanTerm] = useState('');
+    const [rate, setRate] = useState(null);
+
+    const [premiInformation, setPremiInformation] = useState({
+        productInsurance: '',
+        currentAge: '',
+        loanTerm: '',
+        loanAmount: '',
+        premiumAmount: '',
+        endAge: '', 
+      });
 
     const dropdownValues = [
-        { name: 'Kredit Pegawai Plus Pegawai Pemerintah', code: 'NY' },
-        { name: 'Kredit Pegawai Plus Pegawai Swasta', code: 'RM' },
-        { name: 'Kredit Pegawai Plus Perangkat Desa', code: 'LDN' },
-        { name: 'Kepala Desa dan PPPK', code: 'IST' }
+        { name: 'Kredit Pegawai Plus Pegawai Pemerintah', code: '1000000001' },
+        { name: 'Kredit Pegawai Plus Pegawai Swasta', code: '1000000002' },
+        { name: 'Kredit Pegawai Plus Perangkat Desa', code: '1000000005' },
+        { name: 'Kepala Desa dan PPPK', code: '1000000011' },
+        { name: 'Kredit Konsumtif Umum', code: '3100500001' }
     ];
 
-    const multiselectValues = [
-        { name: 'Australia', code: 'AU' },
-        { name: 'Brazil', code: 'BR' },
-        { name: 'China', code: 'CN' },
-        { name: 'Egypt', code: 'EG' },
-        { name: 'France', code: 'FR' },
-        { name: 'Germany', code: 'DE' },
-        { name: 'India', code: 'IN' },
-        { name: 'Japan', code: 'JP' },
-        { name: 'Spain', code: 'ES' },
-        { name: 'United States', code: 'US' }
-    ];
+    const handleLoanAmountChange = (e) => {
+        const value = e.target.value;
+        const sanitizedValue = value.replace(/[^0-9.]/g, '');
+        let formattedValue = sanitizedValue;
+        
+        const decimalIndex = formattedValue.indexOf('.');
+        if (decimalIndex !== -1) {
+          formattedValue = formattedValue.slice(0, decimalIndex + 3);
+        }
+      
+        const integerPart = formattedValue.split('.')[0];
+        if (integerPart.length > 1 && integerPart[0] === '0') {
+          formattedValue = integerPart.slice(1) + '.' + formattedValue.split('.')[1];
+        }
+        
+        setLoanAmount(formattedValue);
+      };
 
-    const selectButtonValues1 = [
-        { name: 'Option 1', code: 'O1' },
-        { name: 'Option 2', code: 'O2' },
-        { name: 'Option 3', code: 'O3' }
-    ];
+    const handleSliderChangeAge = (e) => {
+        const newValue = parseInt(e.value, 10);
+        if (newValue <= 55) {
+          setSliderValueAge(newValue);
+          setCurrentAge(`${newValue} Years`);
+        }
+      };
 
-    const selectButtonValues2 = [
-        { name: 'Option 1', code: 'O1' },
-        { name: 'Option 2', code: 'O2' },
-        { name: 'Option 3', code: 'O3' }
-    ];
+      const handleSliderChangeTenor = (e) => {
+        const newValue = parseInt(e.value, 10);
+        if (newValue <= 120) {
+          setSliderValueTenor(newValue);
+          setLoanTerm(`${newValue} Months`);
+        }
+      };
 
-    useEffect(() => {
-        const countryService = new CountryService();
-        const nodeService = new NodeService();
-        countryService.getCountries().then((data) => setAutoValue(data));
-        nodeService.getTreeNodes().then((data) => setTreeSelectNodes(data));
-    }, []);
+      const formatCurrency = (value) => {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
+      };
 
-    const searchCountry = (event) => {
-        setTimeout(() => {
-            if (!event.query.trim().length) {
-                setAutoFilteredValue([...autoValue]);
-            } else {
-                setAutoFilteredValue(
-                    autoValue.filter((country) => {
-                        return country.name.toLowerCase().startsWith(event.query.toLowerCase());
-                    })
-                );
-            }
-        }, 250);
-    };
+      const formatRate = (rate) => {
+        const parsedRate = parseFloat(rate);
+        if (isNaN(parsedRate)) {
+          return 'N/A';
+        } else {
+          return `${parsedRate.toFixed(2)}%`;
+        }
+      };
 
-    const onCheckboxChange = (e) => {
-        let selectedValue = [...checkboxValue];
-        if (e.checked) selectedValue.push(e.value);
-        else selectedValue.splice(selectedValue.indexOf(e.value), 1);
+      const fetchRate = async (productInsurance, loanTerm) => {
+        try {
+          const response = await axios.get(`http://tesapiasei.asei.co.id:5033/GET_RATE_KUTIM`, {
+            params: {
+              prodkod: productInsurance,
+              tenor: loanTerm,
+            },
+          });
+          const rateValue = response.data[0]?.RATE;
+          setRate(rateValue);
+    
+          const premiumPercentage = rateValue ? parseFloat(rateValue) / 100 : 0;
+          const loanAmountValue = loanAmount ? parseFloat(loanAmount) : 0;
+          const premium = (loanAmountValue * premiumPercentage).toFixed(2);
 
-        setCheckboxValue(selectedValue);
-    };
+          const currentAgeValue = parseInt(sliderValueAge, 10);
+          const loanTermValue = parseInt(sliderValueTenor, 10);
+          const endAgeValue = currentAgeValue + Math.round(loanTermValue / 12);     
+    
+          setPremiInformation({
+            productInsurance: dropdownValue?.name || '',
+            currentAge: `${sliderValueAge} Years`,
+            loanTerm: `${sliderValueTenor} Months`,
+            loanAmount: loanAmount,
+            premiumAmount: premium,
+            endAge: `${endAgeValue} Years`,
+          });
+        } catch (error) {
+          console.error('Error fetching rate:', error);
+        }
+      };
 
-    const itemTemplate = (option) => {
-        return (
-            <div className="flex align-items-center">
-                <span className={`mr-2 flag flag-${option.code.toLowerCase()}`} style={{ width: '18px', height: '12px' }} />
-                <span>{option.name}</span>
-            </div>
-        );
-    };
+      const handleCalculate = () => {
+        const premiumPercentage = 0.05;
+        const premium = (parseFloat(loanAmount) * parseFloat(sliderValueTenor) * premiumPercentage).toFixed(2);
 
-    return (        
+        const currentAgeValue = parseInt(sliderValueAge, 10);
+        const loanTermValue = parseInt(sliderValueTenor, 10);
+        const endAgeValue = currentAgeValue + Math.round(loanTermValue / 12);  
+    
+        setPremiInformation({
+          productInsurance: dropdownValue?.name || '',
+          currentAge: `${sliderValueAge} Years`,
+          loanTerm: `${sliderValueTenor} Months`,
+          loanAmount: loanAmount,
+          premiumAmount: premium,
+          endAge: `${endAgeValue} Years`,
+        });
+
+        fetchRate(dropdownValue?.code, sliderValueTenor);
+      };   
+
+    return (         
         <div className="grid p-fluid">
+
+            <div className="col-12">
+                <div className="card">                
+                    <h5><i className="pi pi-fw pi-calculator"></i> Calculator Premi</h5>
+                    <BreadCrumb home={breadcrumbHome} model={breadcrumbItems} />
+                </div>
+            </div>
+
             <div className="col-12 md:col-6">
 
             <div className="card">
-                    <h5>Calculator Premi</h5>
+                {/* <div className="font-medium text-3xl text-900 mb-3">Premi Information</div> */}
        
                     <h5>Product Insurance</h5>
-                    <Dropdown value={dropdownValue} onChange={(e) => setDropdownValue(e.value)} options={dropdownValues} optionLabel="name" placeholder="Select" />
+                    <Dropdown value={dropdownValue} 
+                                onChange={(e) => {
+                                    setDropdownValue(e.value);
+                                    setProductInsurance(e.value.name); 
+                                }} 
+                        options={dropdownValues} 
+                        optionLabel="name" placeholder="Select Product Insurance" 
+                    />
 
                     <h5></h5>
                     <div className="grid formgrid">
-                        <div className="col-12 mb-2 lg:col-6">
-                            <h5>Current Age</h5>
-                            <InputText value={sliderValue} onChange={(e) => setSliderValue(parseInt(e.target.value), 10)} />
-                            <Slider value={sliderValue} onChange={(e) => setSliderValue(e.value)} />
+                    <div className="col-12 mb-2 lg:col-6">
+                        <h5>Current Age</h5>
+                        <div style={{ marginBottom: '10px' }}>
+                        {sliderValueAge} Years
                         </div>
+                        <Slider value={sliderValueAge} onChange={handleSliderChangeAge} min={0} max={55} />
+                    </div>
 
-                        <div className="col-12 mb-2 lg:col-6">
-                            <h5>Loan Term</h5>
-                            <InputText value={sliderValue} onChange={(e) => setSliderValue(parseInt(e.target.value), 10)} />
-                            <Slider value={sliderValue} onChange={(e) => setSliderValue(e.value)} />
-                        </div>    
+                    <div className="col-12 mb-2 lg:col-6">
+                        <h5>Loan Term</h5>
+                        <div style={{ marginBottom: '10px' }}>
+                        {sliderValueTenor} Months
+                        </div>
+                        <Slider value={sliderValueTenor} onChange={handleSliderChangeTenor} min={0} max={120} />
+                    </div>
                     </div>               
 
                     <h5>Loan Amount</h5>
-                    <InputText type="text" placeholder="Default"></InputText>
+                    <InputText type="number" step="0.01" value={loanAmount} onChange={handleLoanAmountChange} />
 
                     <h5></h5>
-                    <Button label="Calculator" icon="pi pi-calculator" iconPos="right" />
-
+                    <Button label="Calculator" icon="pi pi-calculator" iconPos="right" onClick={handleCalculate} />
                    
                 </div>
                                 
@@ -170,46 +200,35 @@ export const CalculatorKutim = () => {
                     <ul className="list-none p-0 m-0">
                         <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                             <div className="text-500 w-6 md:w-4 font-medium">Product Insurance</div>
-                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">Kredit Pegawai Plus Pegawai Pemerintah</div>
+                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">{premiInformation.productInsurance}</div>
                         </li>
                         <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                             <div className="text-500 w-6 md:w-4 font-medium">Current Age</div>
-                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">50 Tahun</div>
-                        </li>
-                        <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                            <div className="text-500 w-6 md:w-4 font-medium">End Age</div>
-                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">55 Tahun</div>
-                            {/* <div className="w-6 md:w-2 flex justify-content-end">
-                                <Button label="Edit" icon="pi pi-pencil" className="p-button-text" />
-                            </div> */}
+                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">{premiInformation.currentAge}</div>
                         </li>
                         <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                             <div className="text-500 w-6 md:w-4 font-medium">Loan Term</div>
-                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">60 Bulan</div>
-                            {/* <div className="w-6 md:w-2 flex justify-content-end">
-                                <Button label="Edit" icon="pi pi-pencil" className="p-button-text" />
-                            </div> */}
+                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">{premiInformation.loanTerm}</div>
                         </li>
                         <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                            <div className="text-500 w-6 md:w-4 font-medium">End Age</div>
+                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">{premiInformation.endAge}</div>
+                        </li>                        
+                        <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                             <div className="text-500 w-6 md:w-4 font-medium">Loan Amount</div>
-                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">Rp. 150.000,00</div>
-                            {/* <div className="w-6 md:w-2 flex justify-content-end">
-                                <Button label="Edit" icon="pi pi-pencil" className="p-button-text" />
-                            </div> */}
+                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">{formatCurrency(premiInformation.loanAmount)}</div>
                         </li>
                         <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                             <div className="text-500 w-6 md:w-4 font-medium">Rate</div>
-                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">0,65 %</div>
-                            {/* <div className="w-6 md:w-2 flex justify-content-end">
-                                <Button label="Edit" icon="pi pi-pencil" className="p-button-text" />
-                            </div> */}
+                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">{formatRate(rate)}</div>
                         </li>
                         <li className="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                             <div className="text-500 w-6 md:w-4 font-medium">Premi</div>
-                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">Rp. 975,00</div>
-                            {/* <div className="w-6 md:w-2 flex justify-content-end">
-                                <Button label="Edit" icon="pi pi-pencil" className="p-button-text" />
-                            </div> */}
+                            <div className="text-900 w-full md:w-6 md:flex-order-0 flex-order-1">
+                                <div class="list-group-item-value">
+                                    <b>{formatCurrency(premiInformation.premiumAmount)}</b>
+                                </div>
+                            </div>
                         </li>              
                                                          
                     </ul>

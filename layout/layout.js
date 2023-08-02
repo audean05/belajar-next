@@ -106,7 +106,7 @@ const Layout = (props) => {
     return (
         <React.Fragment>
             <Head>
-                <title>My Asei 2.0</title>
+                <title>Asuransi Asei Indonesia</title>
                 <meta charSet="UTF-8" />
                 <meta name="description" content="The ultimate collection of design-agnostic, flexible and accessible React UI Components." />
                 <meta name="robots" content="index, follow" />

@@ -8,7 +8,7 @@ import { Calendar } from 'primereact/calendar';
 
 const SeacrhBws = () => {
     const breadcrumbHome = { icon: 'pi pi-home', to: '/' };
-    const breadcrumbItems = [{ label: 'Bank Woori Saudara' }, { label: 'Data Acceptance' }];
+    const breadcrumbItems = [{ label: 'Bank Perekonomian Rakyat' }, { label: 'Kutai Timur'}, { label: 'Data Rejected' }];
 
     const [loading2, setLoading2] = useState(false);
     const [calendarValueAwal, setCalendarValueAwal] = useState(null);
@@ -97,14 +97,14 @@ const SeacrhBws = () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
-                    <h5>Data Acceptance - Bank Woori Saudara</h5>
+                    <h5><i className="pi pi-fw pi-ban"></i> Data Rejected</h5>
                     <BreadCrumb home={breadcrumbHome} model={breadcrumbItems} />
                 </div>
             </div>
 
             <div className="col-12">
                 <div className="card">
-                <h5>Search Data Acceptance</h5>
+                <h5>Search Data Rejected</h5>
                  
                     <div className="card">                      
                     
